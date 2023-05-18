@@ -1,6 +1,6 @@
 # quizapp
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue Quiz app, constructed using static JSON data, with a preliminary implementation that encompasses the core functionality and incorporates some styling, yet still requires further enhancements such as animations to reach its full potential.
 
 ## Recommended IDE Setup
 
