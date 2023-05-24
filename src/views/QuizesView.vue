@@ -1,7 +1,9 @@
 <script setup>
     import q from "../data/quizes.json"
-    import { ref, watch } from "vue"
+    import { ref, Transition, watch } from "vue"
     import Card from "../components/Card.vue"
+    // gsap - external npm package for styling animations
+    import gsap from "gsap"
 
     const quizes = ref(q);
     const search = ref("")
@@ -10,6 +12,26 @@
         // filter quizes based on the current state of the search input. Lowercased because the evaluation is case sensitive!
         quizes.value = q.filter(quiz => quiz.name.toLowerCase().includes(search.value.toLowerCase()))
     })
+
+    // Lifecycle hooks for TransitionGroups:
+
+    const beforeEnter = (el) => {
+        el.style.opacity = 0;
+        el.style.transform = "translateY(-100px)"
+    }
+
+    const enter = (el) => {
+        gsap.to(el, {
+            y: 0,
+            opacity: 1,
+            duration: .3,
+            delay: el.dataset.index * 0.3
+        })
+    }
+
+    const afterEnter = (el) => {
+        console.log("AFTER ENTER")
+    }
 
 </script>
 
@@ -20,7 +42,18 @@
     </header>
 
     <div class="options-container">
-        <Card v-for="quiz in quizes" :key="quiz.id" :quiz="quiz" />
+        <TransitionGroup
+        appear
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @after-enter="afterEnter"
+        >
+                <Card v-for="(quiz, index) in quizes"
+                :key="quiz.id"
+                :quiz="quiz" 
+                :data-index="index"
+                />
+        </TransitionGroup>
     </div>
 
 </template>
@@ -51,12 +84,10 @@ header input:focus {
     transition: .1s ease-in-out;
 }
 
-
 .options-container {
     display: flex;
     flex-wrap: wrap;
     margin-top: 40px
 }
-
 
 </style>
